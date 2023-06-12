@@ -1,5 +1,5 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "RikkeiSoft-Project",
     "n_gpu": 1,
 
     "arch": {
