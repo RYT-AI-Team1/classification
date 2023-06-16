@@ -16,26 +16,16 @@ from torchvision.transforms import Resize
 import time
 import matplotlib.pyplot as plt
 import copy
+from tensorboardX import SummaryWriter
+from ..logger.visualization import TensorboardWriter
+from data_loader.data_loaders import CustomDataset
+import logging
 
-class CustomDataset(Dataset):
-    def __init__(self, csv_file, root_dir, transform=None):
-        self.annotations = pd.read_csv(csv_file)
-        self.root_dir = root_dir
-        self.transform = transform
+log_dir = "./logs"
+logger = logging.getLogger(__name__)
+enabled = True
 
-    def __len__(self):
-        return len(self.annotations)
-
-    def __getitem__(self, index):
-        img_path = os.path.join(self.root_dir, self.annotations.iloc[index, 0])
-        image = Image.open(img_path)
-        y_label = torch.tensor(int(self.annotations.iloc[index, 1]))
-
-        if self.transform:
-            image = self.transform(image)
-
-        return (image, y_label)
-
+writer = TensorboardWriter(log_dir, logger, enabled)
 
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -122,6 +112,11 @@ for epoch in range(num_epochs):
             total += targets.size(0)
 
     acc = correct / total
+    # Log the validation accuracy
+    writer.writer.add_scalar('Accuracy/val', acc, epoch)
+    writer.writer.add_scalar('Loss/train', loss.item(), epoch)
+
+
      # Log the validation accuracy
     # writer.add_scalar('Accuracy/val', acc, epoch)
 

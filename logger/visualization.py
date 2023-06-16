@@ -12,7 +12,7 @@ class TensorboardWriter():
 
             # Retrieve vizualization writer.
             succeeded = False
-            for module in ["torch.utils.tensorboard", "tensorboardX"]:
+            for module in ["tensorboardX", "torch.utils.tensorboard"]:
                 try:
                     self.writer = importlib.import_module(module).SummaryWriter(log_dir)
                     succeeded = True
@@ -71,3 +71,5 @@ class TensorboardWriter():
             except AttributeError:
                 raise AttributeError("type object '{}' has no attribute '{}'".format(self.selected_module, name))
             return attr
+
+
